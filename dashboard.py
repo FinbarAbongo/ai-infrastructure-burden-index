@@ -11,6 +11,13 @@ st.set_page_config(
     layout="wide",
 )
 
+SCENARIOS = {
+    "Equal weights": "equal",
+    "Poverty emphasis": "poverty_focus",
+    "Electricity-price emphasis": "electricity_focus",
+    "Water-stress emphasis": "water_focus",
+}
+
 
 @st.cache_data
 def load_data():
@@ -27,22 +34,15 @@ def load_data():
         dtype={"county_fips": str, "facility_id": str},
     )
 
-    facilities = facilities[
-        facilities["county_fips"].isin(counties["county_fips"])
-    ].copy()
+    if not counties["county_fips"].is_unique:
+        raise ValueError("County FIPS must be unique.")
 
-    scenario_columns = [
-        "county_fips",
-        "equal_score",
-        "equal_rank",
-        "poverty_focus_score",
-        "poverty_focus_rank",
-        "electricity_focus_score",
-        "electricity_focus_rank",
-        "water_focus_score",
-        "water_focus_rank",
-        "rank_range",
-    ]
+    scenario_columns = ["county_fips", "rank_range"]
+    for scenario in SCENARIOS.values():
+        scenario_columns.extend([
+            f"{scenario}_score",
+            f"{scenario}_rank",
+        ])
 
     counties = counties.merge(
         sensitivity[scenario_columns],
@@ -50,7 +50,20 @@ def load_data():
         how="left",
         validate="one_to_one",
     )
+
+    facilities = facilities[
+        facilities["county_fips"].isin(counties["county_fips"])
+    ].copy()
+
     return counties, facilities
+
+
+def display_value(value):
+    if pd.isna(value):
+        return "Not available"
+    if isinstance(value, float):
+        return f"{value:,.2f}"
+    return str(value)
 
 
 try:
@@ -63,28 +76,22 @@ st.title("AI Infrastructure Burden Index")
 st.caption(
     "Exploratory county screening using PeeringDB-listed facilities"
 )
-st.warning(
+
+# Keep this as a standalone call.
 st.info(
     "About this index: Compare county vulnerability using poverty, "
     "residential electricity prices and water stress near listed "
     "facilities. Rankings support further research and do not "
     "measure impacts caused by facilities."
 )
-)
-
-scenarios = {
-    "Equal weights": "equal",
-    "Poverty emphasis": "poverty_focus",
-    "Electricity-price emphasis": "electricity_focus",
-    "Water-stress emphasis": "water_focus",
-}
 
 st.sidebar.header("Explore")
 
 selection = st.sidebar.selectbox(
-    "Weighting scenario", list(scenarios)
+    "Weighting scenario",
+    list(SCENARIOS),
 )
-scenario = scenarios[selection]
+scenario = SCENARIOS[selection]
 
 states = st.sidebar.multiselect(
     "States",
@@ -124,20 +131,19 @@ st.caption(
     "Filters change the display, not the reference group."
 )
 
-map_tab, ranking_tab, county_tab, method_tab = st.tabs(
-    [
-        "Facility map",
-        "Rankings",
-        "County details",
-        "Method and coverage",
-    ]
-)
+map_tab, ranking_tab, county_tab, method_tab = st.tabs([
+    "Facility map",
+    "Rankings",
+    "County details",
+    "Method and coverage",
+])
 
 with map_tab:
     st.subheader("PeeringDB-listed facility locations")
 
     coordinates = mapped[["latitude", "longitude"]].apply(
-        pd.to_numeric, errors="coerce"
+        pd.to_numeric,
+        errors="coerce",
     ).dropna()
 
     if coordinates.empty:
@@ -170,11 +176,25 @@ with ranking_tab:
         "rank_range",
     ]
 
+    labels = {
+        "county_name": "County",
+        "state": "State",
+        "listed_facility_count": "Listed facility records",
+        score_column: "Screening score",
+        rank_column: "Rank",
+        "poverty_rate": "Poverty rate (%)",
+        "residential_price_cents_kwh":
+            "State residential price (cents/kWh)",
+        "mean_facility_water_stress_score":
+            "Mean facility-location water stress (0–5)",
+        "rank_range": "Rank range across scenarios",
+    }
+
     if ranked.empty:
         st.info("No scored counties match these filters.")
     else:
         st.dataframe(
-            ranked[columns].round(2),
+            ranked[columns].rename(columns=labels).round(2),
             hide_index=True,
         )
 
@@ -191,7 +211,7 @@ with county_tab:
             ["state", "county_name"]
         )["county_fips"].tolist()
 
-        labels = {
+        county_labels = {
             row["county_fips"]:
                 f"{row['county_name']}, {row['state']}"
             for _, row in view.iterrows()
@@ -200,7 +220,7 @@ with county_tab:
         chosen = st.selectbox(
             "Choose a county",
             options,
-            format_func=lambda code: labels[code],
+            format_func=lambda code: county_labels[code],
         )
 
         row = view.set_index("county_fips").loc[chosen]
@@ -223,34 +243,48 @@ with county_tab:
                 row["water_stress_summary_status"],
             "Selected screening score":
                 row[score_column],
+            "Selected rank":
+                row[rank_column],
         }
 
-        detail_rows = []
-        for label, value in details.items():
-            if pd.isna(value):
-                display = "Not available"
-            elif isinstance(value, float):
-                display = f"{value:,.2f}"
-            else:
-                display = str(value)
-
-            detail_rows.append({
-                "Indicator": label,
-                "Value": display,
-            })
-
         st.dataframe(
-            pd.DataFrame(detail_rows),
+            pd.DataFrame([
+                {
+                    "Indicator": label,
+                    "Value": display_value(value),
+                }
+                for label, value in details.items()
+            ]),
             hide_index=True,
         )
+
+        st.subheader("Listed facilities in this county")
+        county_facilities = mapped[
+            mapped["county_fips"].eq(chosen)
+        ]
+
+        if county_facilities.empty:
+            st.info("No listed facilities in the downloaded inventory.")
+        else:
+            st.dataframe(
+                county_facilities[
+                    ["facility_name", "latitude", "longitude"]
+                ].rename(columns={
+                    "facility_name": "Facility",
+                    "latitude": "Latitude",
+                    "longitude": "Longitude",
+                }),
+                hide_index=True,
+            )
 
 with method_tab:
     st.subheader("How the score works")
     st.write(
-        "Each component is converted to a percentile among "
-        "eligible counties. The weighted mean is multiplied "
-        "by 100. Higher scores indicate higher combined values "
-        "of the selected indicators."
+        "Each component is converted to a percentile among eligible "
+        "counties. The weighted mean is multiplied by 100. Higher "
+        "scores indicate higher combined values of the selected "
+        "indicators. Facility counts are shown separately and are "
+        "not a score component."
     )
     st.write(
         "Eligibility requires listed facilities, complete water "
@@ -259,18 +293,37 @@ with method_tab:
     )
 
     st.table(pd.DataFrame({
-        "Scenario": list(scenarios),
+        "Scenario": list(SCENARIOS),
         "Poverty weight": ["33⅓%", "50%", "25%", "25%"],
         "Electricity weight": ["33⅓%", "25%", "50%", "25%"],
         "Water weight": ["33⅓%", "25%", "25%", "50%"],
     }))
 
-    st.subheader("Sources and limitations")
+    st.subheader("Sources")
+    st.markdown(
+        "- **Poverty and income:** "
+        "[Census SAIPE](https://www.census.gov/programs-surveys/saipe.html), "
+        "2024 county estimates.\n"
+        "- **Electricity:** "
+        "[EIA Table 2.10]"
+        "(https://www.eia.gov/electricity/annual/table.php?t=epa_02_10.html), "
+        "2024 state residential prices. All 51 state/DC values "
+        "were checked against this table.\n"
+        "- **Water stress:** "
+        "[WRI Aqueduct 4.0]"
+        "(https://www.wri.org/data/aqueduct-global-maps-40-data), "
+        "baseline annual layer.\n"
+        "- **Facility locations:** "
+        "[PeeringDB](https://www.peeringdb.com/), "
+        "downloaded inventory snapshot."
+    )
+
+    st.subheader("Limitations")
     st.write(
         "SAIPE estimates and electricity prices refer to 2024. "
         "Facility locations reflect the downloaded inventory "
-        "snapshot. Aqueduct 4.0 supplies baseline annual water "
-        "stress, not a 2024 measurement."
+        "snapshot. Aqueduct supplies baseline annual water stress, "
+        "not a 2024 measurement."
     )
     st.write(
         "Electricity prices are state-level residential prices. "
@@ -280,12 +333,15 @@ with method_tab:
     st.write(
         "Missing water stress remains missing. No listed facilities "
         "does not prove absence of infrastructure. Invalid Aqueduct "
-        "geometry was repaired, with an audit file retained."
+        "geometry was repaired, with an audit retained locally."
     )
     st.write(
-        "Rankings are sensitive to weighting choices: the "
-        "electricity-emphasis scenario shared only four of the "
-        "equal-weight scenario's top ten counties."
+        "Rankings depend on weighting choices. The electricity "
+        "emphasis scenario shared four of the equal-weight "
+        "scenario's top ten counties."
+    )
+    st.caption(
+        "Water data attribution: WRI Aqueduct, accessed October 6, 2026."
     )
 
     st.subheader("Coverage across all counties")
