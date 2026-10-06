@@ -62,3 +62,7 @@ matching requires consistent coordinate systems and valid geometry.
 Repairing invalid Aqueduct polygons recovered 168 facility matches;
 repair records were retained locally for audit. Weight sensitivity
 checks showed why a single ranking should not be presented as definitive.
+
+## Live demo
+
+[Explore the dashboard](https://ai-infrastructure-burden-index-00.streamlit.app)
