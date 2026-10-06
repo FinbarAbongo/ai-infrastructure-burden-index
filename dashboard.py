@@ -64,9 +64,12 @@ st.caption(
     "Exploratory county screening using PeeringDB-listed facilities"
 )
 st.warning(
-    "DRAFT — electricity source verification is outstanding. "
-    "Scores describe selected vulnerability indicators; "
-    "they do not establish harm caused by facilities."
+st.info(
+    "About this index: Compare county vulnerability using poverty, "
+    "residential electricity prices and water stress near listed "
+    "facilities. Rankings support further research and do not "
+    "measure impacts caused by facilities."
+)
 )
 
 scenarios = {
