@@ -1,0 +1,29 @@
+# Virtual environments
+.venv/
+.venv-1/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Credentials
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Mac files
+.DS_Store
+
+# Original downloads and large geometry audits
+data/raw/
+data/processed/aqueduct_geometry_repairs.csv
+data/processed/aqueduct_polygon_review.csv
+
+# Backup files
+*.bak
+app_backup/
+
+.agents/

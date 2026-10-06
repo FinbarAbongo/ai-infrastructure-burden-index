@@ -1,0 +1,24 @@
+facility_id,facility_name,country,state,city,address,address_line_2,latitude,longitude,status,latitude_original,longitude_original,review_reason,source_file
+103,Equinix LA5 - Los Angeles,US,CA,Los Angeles,1200 W. 7th St,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+379,iConnect Helena,US,MT,Helena,Hustad Center,1084 Helena Avenue,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+560,365 Data Centers Boca Raton (BC1),US,FL,Boca Raton,3500 NW Boca Raton Blvd.,Buildings 800 & 900,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+1390,Rackspace Dallas Richardson (DFW3),US,TX,Richardson,1215 Datacenter Park Blvd.,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+1410,Westelcom Networks Syracuse,US,NY,Syracuse,109 S. Warren Street,LL107 / 108,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+2145,SJU-01,US,PR,San Juan,Mario Julia Industrial Park 390 Calle A,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+2335,601 West 26th Street,US,NY,New York,601 West 26th St,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+2412,Hudson Interxchange - New York - 60 Hudson,US,NY,New York,60 Hudson Street,"Floors 5, 6, 7, 8 and mezzanine",,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+2531,ACT Chugwater,US,WY,Chugwater,,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+3049,Web Werks US 1,US,,Philadelphia,Philadelphia,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+3050,Web Werks US 2,US,PA,Conshohocken,Conshohocken,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+3770,Anexio ACC4,US,VA,Ashburn,44480 Hastings Drive,CR8A,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+3907,Anexio VA3,US,VA,Reston,1780 Business Center Drive,"CR5A, CR6A",,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+3908,Anexio DC2,US,VA,Ashburn,21715 Filigree Court,"Cage 20147, Cabinet 0515",,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+5151,QTS Ashburn (IAD2),US,VA,Sterling,44874 Moran Road,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+5794,"North Data Center, LLC",US,MT,Great Falls,417 Central Ave Suite 328,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+8556,Telxius Virginia Beach DC,US,,Virginia Beach,"Corporate Landing PKWY, General Booth BLV,",,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+9086,Telxius San Juan DC,US,PR,San Juan Puerto Rico,Calle Loíza,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+10496,Digital Crossroad DX-1,US,IN,Hammond,Indianapolis Blvd,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+13444,CMS Internet - DC1 - Mount Pleasant MI,US,,Mount Pleasant,Mount Pleasant,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+14006,Lighthouse Data Center (Houston),US,TX,Houston,3960 Braxton Dr,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+14139,UPIX EDGE SUZANO 01,US,PA,Suzano,R. Paraná,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json
+16151,DREAM CLOUD Tokyo #1,US,,Tokyo,6 Chome-2-12 Toyosu,,,,ok,,,missing_or_nonnumeric_coordinates,peeringdb_us_facilities_20261006T160916Z.json

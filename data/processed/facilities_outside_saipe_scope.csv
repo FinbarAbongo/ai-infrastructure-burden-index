@@ -1,0 +1,2 @@
+facility_id,facility_name,country,state,city,address,address_line_2,latitude,longitude,status,latitude_original,longitude_original,review_reason,source_file,county_fips,matched_county_name,county_match_count
+14878,Fusetelecom Data Center,US,PR,Bayamon,Maceo #4 Bayamón Pueblo,,18.398479,-66.156217,ok,18.398479,-66.156217,,peeringdb_us_facilities_20261006T160916Z.json,72021,Bayamón,1
